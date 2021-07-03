@@ -1,6 +1,7 @@
 package com.keimos.travellogs
 
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 
@@ -25,6 +26,28 @@ object UserData {
 
     fun notifyObserver() {
         this._notes.notifyObserver()
+    }
+
+    fun notes() : LiveData<MutableList<Note>> = _notes
+    fun addNote(n : Note) {
+        val notes = _notes.value
+        if (notes != null) {
+            notes.add(n)
+            _notes.notifyObserver()
+        } else {
+            Log.e(TAG, "addNote : note collection is null !!")
+        }
+    }
+
+    fun deleteNote(at: Int) : Note? {
+        val  note = _notes.value?.removeAt(at)
+        _notes.notifyObserver()
+        return note
+    }
+
+    fun resetNotes() {
+        this._notes.value?.clear() //use when siging out
+        _notes.notifyObserver()
     }
 
     // note data class
